@@ -29,7 +29,7 @@ router.get("/view/:name", async function(req, res)
         return res.redirect("/games");
     } 
 
-    req.TPL.game = game;
+    req.TPL.game = existingGame;
     res.render("game_view", req.TPL);
 });
 
