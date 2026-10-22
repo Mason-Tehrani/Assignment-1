@@ -1,12 +1,13 @@
 <div class="topnav">
   <a href="/home" {{#homenav}}class="curnav"{{/homenav}}>Home</a>
+  <a href="/games" {{#gamenav}}class="curnav"{{/gamenav}}>Games</a>
  
 
   {{#displaylogin}}
     <a href="/login" {{#loginnav}}class="curnav"{{/loginnav}}>Login</a>
   {{/displaylogin}}
   {{#displaylogout}}
-   <a href="/admin" {{#articlesnav}}class="curnav"{{/adminnav}}>Articles</a>
+    <a href="/admin" {{#adminnav}}class="curnav"{{/adminnav}}>Articles</a>
     <a href="/login/logout">Logout</a>
   {{/displaylogout}}
 </div>

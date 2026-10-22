@@ -36,3 +36,5 @@ async function validateLogin(username, password)
     return false;
   }
 }
+
+module.exports = {getAllUsers, createUser, validateLogin};

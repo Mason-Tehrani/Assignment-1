@@ -18,8 +18,6 @@ async function getAllGames()
   return results;
 }
 
-
-
 // Create a new Game
 async function AddGame(Game)
 { 
@@ -46,13 +44,17 @@ async function getGame(rowid)
   return results;
 }
 
-// Return individual game
+// delete individual game
 async function deleteGame(rowid)
 {
   const results = db.all("DELETE FROM Games WHERE GameId = ?", [rowid]);
   return results;
 }
 
+async function updateGame(rowid,amount,price)
+{
+  const results = db.all("UPDATE Games SET Price = ?, Amount_Available = ? WHERE GameId = ?", [price, amount, rowid]);
+  return results;
+}
 
-module.exports = {getAllArticles
-                 ,createArticle};
+module.exports = {getAllGames, AddGame, getGame, deleteGame, updateGame};

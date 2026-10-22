@@ -1,0 +1,8 @@
+Run:
+
+npm install
+
+node db_init.js
+
+node app.js
+
