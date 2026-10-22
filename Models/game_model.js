@@ -37,21 +37,24 @@ async function AddGame(Game)
                [Game.name, Game.Category, Game.amount_available, Game.price]);
 }
 
-// Return individual game
-async function getGame(rowid)
+//get individual game
+async function getGame(name)
 {
-  const results = db.all("SELECT * FROM Games WHERE GameId = ?", [rowid]);
-  return results;
-}
+    const result = await db.get(
+        "SELECT * FROM Games WHERE Name = ?",
+        [name]
+    );
 
+    return result;
+}
 // delete individual game
-async function deleteGame(rowid)
+async function deleteGame(name)
 {
-  const results = db.all("DELETE FROM Games WHERE GameId = ?", [rowid]);
+  const results = db.all("DELETE FROM Games WHERE Name = ?", [name]);
   return results;
 }
 
-async function updateGame(rowid,amount,price)
+async function updateGame(Name,amount,price)
 {
   const results = db.all("UPDATE Games SET Price = ?, Amount_Available = ? WHERE GameId = ?", [price, amount, rowid]);
   return results;

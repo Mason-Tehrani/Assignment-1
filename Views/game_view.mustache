@@ -1,0 +1,36 @@
+{{>header}}
+
+{{>navigation}}
+
+<div class="row">
+    <div class="card">
+        {{#displaylogout}}
+        <h2>View Game: {{Name}}</h2>
+
+        {{#game}}
+        <form action="/games/update/{{Name}}" method="POST">
+
+            <label>Name:</label>
+            <input type="text" name="Name" value="{{Name}}">
+
+            <label>Category:</label>
+            <input type="text" name="Category" value="{{Category}}">
+
+            <label>Amount Available:</label>
+            <input type="number" name="Amount_Available"value="{{Amount_Available}}">
+
+            <label>Price:</label>
+            <input type="number" name="Price" value="{{Price}}" step="0.01">
+
+            <button type="submit">Update</button>
+        </form>
+        {{/game}}
+        {{/displaylogout}}
+
+        {{#displaylogin}}
+        <h3>Get outta here you rascal, you are not a logged in employee</h3>
+        {{/displaylogin}}
+
+        <a href="/games">Back to Games</a>
+    </div>
+</div>

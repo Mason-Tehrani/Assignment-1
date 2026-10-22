@@ -1,3 +1,11 @@
+<style>
+    .deleteBTN{
+        margin-top: 15px;
+        color: white;
+        background-color: red;
+    }
+</style>
+
 {{>header}}
 
 {{>navigation}}
@@ -14,8 +22,10 @@
             <label>Amount Available: {{Amount_Available}}</label><br>
             <label>Price: ${{Price}}</label><br>
             {{#displaylogout}}
-                <button type="button">Update</button>
-                <button type="button">Delete</button>
+                <a  href="/games/view/{{Name}}">Update</a>
+                <form action="/games//delete/:name" method="delete">
+                    <input type="submit" class=deleteBTN value="Delete {{Name}}">
+                </form>
             {{/displaylogout}}
             <p>-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_</p>
             {{/games}}
