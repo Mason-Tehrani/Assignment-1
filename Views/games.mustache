@@ -4,6 +4,14 @@
         color: white;
         background-color: red;
     }
+    .createBTN{
+        margin-top: 15px;
+        color: white;
+        background-color: orange;
+        height: 50px;
+        width: 75px
+       font-size: 25px;
+    }
 </style>
 
 {{>header}}
@@ -14,7 +22,9 @@
     <div class="card">
         <h2>GAME LIST</h2>
         {{#displaylogout}}
-            <button type="button">Create</button>
+            <form action="/games/create" method="GET">
+                <input type="submit" class=createBTN value="create new game">
+            </form>
         {{/displaylogout}}
         {{#games}}
             <h3>Name: {{Name}}</h3>
@@ -23,11 +33,11 @@
             <label>Price: ${{Price}}</label><br>
             {{#displaylogout}}
                 <a  href="/games/view/{{Name}}">Update</a>
-                <form action="/games//delete/:name" method="delete">
+                <form action="/games/delete/{{Name}}" method="POST">
                     <input type="submit" class=deleteBTN value="Delete {{Name}}">
                 </form>
             {{/displaylogout}}
             <p>-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_</p>
             {{/games}}
     </div>
-</div>
+</div

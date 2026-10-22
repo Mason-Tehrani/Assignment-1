@@ -1,3 +1,4 @@
+
 {{>header}}
 
 {{>navigation}}
@@ -5,9 +6,10 @@
 <div class="row">
     <div class="card">
         {{#displaylogout}}
-        <h2>View Game: {{Name}}</h2>
 
         {{#game}}
+        <h2>Update Game: {{Name}}</h2>
+
         <form action="/games/update/{{Name}}" method="POST">
 
             <label>Name:</label>
@@ -17,14 +19,38 @@
             <input type="text" name="Category" value="{{Category}}">
 
             <label>Amount Available:</label>
-            <input type="number" name="Amount_Available"value="{{Amount_Available}}">
+            <input type="number" name="Amount_Available"
+                   value="{{Amount_Available}}">
 
             <label>Price:</label>
-            <input type="number" name="Price" value="{{Price}}" step="0.01">
+            <input type="number" name="Price"
+                   value="{{Price}}" step="0.01">
 
             <button type="submit">Update</button>
         </form>
         {{/game}}
+
+        {{^game}}
+        <h2>Create Game</h2>
+
+        <form action="/games/create" method="POST">
+
+            <label>Name:</label>
+            <input type="text" name="Name">
+
+            <label>Category:</label>
+            <input type="text" name="Category">
+
+            <label>Amount Available:</label>
+            <input type="number" name="Amount_Available">
+
+            <label>Price:</label>
+            <input type="number" name="Price" step="0.01">
+
+            <button type="submit">Create</button>
+        </form>
+        {{/game}}
+
         {{/displaylogout}}
 
         {{#displaylogin}}
