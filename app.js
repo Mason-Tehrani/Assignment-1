@@ -10,9 +10,13 @@ app.engine("mustache", mustacheExpress());
 app.set('view engine', 'mustache');
 app.set('views', __dirname + '/views');
 
+const {Client, GatewayIntentBits} = require('discord.js');
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent
+] });
 
-const { Client, GatewayIntentBits } = require('discord.js');
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+//jasontnt124@gmail.com emergingwebtech bot token
+const DiscordBotToken = 'MTU1MDE2NDI5NzIzMjE1ODc0MA.GoC4uw.GGeFUbbKh-rYvH3Jq9RI7QBUotHonR7DAm1YuU'
 
 client.on('interactionCreate', async function(interaction) {
   if (!interaction.isChatInputCommand()) return;
@@ -22,6 +26,13 @@ client.on('interactionCreate', async function(interaction) {
   io.emit('botactivity', { command: interaction.commandName, time: new Date() });
 });
 
-client.login('YOUR_BOT_TOKEN');
+client.login(DiscordBotToken);
 
-http.listen(3000, function() { console.log('Server listening...'); });
+// Start the server
+var server = app.listen(3000, function() {
+        console.log("Server listening...");
+})
+
+client.on('clientReady', () => {
+    console.log(`Logged in as ${client.user.tag}!`);
+});
