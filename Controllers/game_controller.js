@@ -1,6 +1,6 @@
 const express = require('express');
 var router = express.Router()
-const { getAllGames,AddGame,getGame,deleteGame } = require("../Models/game_model.js");
+const { getAllGames,AddGame,getGame,deleteGame,updateGame } = require("../Models/game_model.js");
 
 // Display the home page
 router.get("/", async function(req, res)
@@ -69,6 +69,25 @@ router.post("/delete/:name", async function(req, res)
 
 });
 
+router.post("/update/:name", async function(req, res) {
+    const existingGame = await getGame(req.params.name);
+
+    if (!existingGame) {
+        return res.redirect("/games");
+    }
+
+    //i give up, brute force this one
+    const updatedGame = {
+        Name: req.params.name,
+        Category: req.body.Category,
+        Amount_Available: req.body.Amount_Available,
+        Price: req.body.Price
+    };
+
+    await updateGame(updatedGame);
+
+    return res.redirect("/games");
+});
 
 
 module.exports = router;

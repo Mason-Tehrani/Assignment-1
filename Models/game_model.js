@@ -53,11 +53,13 @@ async function deleteGame(name)
   const results = db.all("DELETE FROM Games WHERE Name = ?", [name]);
   return results;
 }
+async function updateGame(game) {
+    const results = await db.run(
+        "UPDATE Games SET Category = ?, Price = ?, Amount_Available = ? WHERE name = ?",
+        [game.Category, game.Price, game.Amount_Available, game.Name]
+    );
 
-async function updateGame(game)
-{
-  const results = db.get("UPDATE Games SET Category = ?, SET Price = ?, Amount_Available = ? WHERE Name = ?", [game.category, game.price, game.amount, game.name]);
-  return results;
+    return results;
 }
 
 module.exports = {getAllGames, AddGame, getGame, deleteGame, updateGame};
