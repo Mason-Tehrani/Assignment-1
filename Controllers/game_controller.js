@@ -21,4 +21,14 @@ router.get("/games", async function(req, res)
 
 });
 
+router.get("/game/:id", async function(req, res)
+{
+
+  const games = await getAllGames();
+
+  req.TPL.games = games;
+  res.render("games", req.TPL);
+
+});
+
 module.exports = router;
