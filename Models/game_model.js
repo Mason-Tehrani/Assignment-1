@@ -19,22 +19,22 @@ async function getAllGames()
 }
 
 // Create a new Game
-async function AddGame(Game)
-{ 
+async function AddGame(Game) {
 
-    const games = getAllGames();
+    if (!Game.Name || Game.Name.trim() === "") {
+        throw new Error("Invalid name, empty name is not allowed");
+    }
 
-      const gameExists = games.some(
-        game => game.name.toLowerCase() === Game.name.toLowerCase()
-    );
+    const gameExists = await getGame(Game.Name);
 
     if (gameExists) {
         throw new Error("A game with this name already exists.");
     }
 
-
-  await db.run("INSERT INTO Games VALUES (?,?,?)",
-               [Game.name, Game.Category, Game.amount_available, Game.price]);
+    await db.run(
+        "INSERT INTO Games (name, Category, Amount_Available, Price) VALUES (?, ?, ?, ?)",
+        [Game.Name, Game.Category, Game.Amount_Available, Game.Price]
+    );
 }
 
 //get individual game
@@ -54,9 +54,9 @@ async function deleteGame(name)
   return results;
 }
 
-async function updateGame(Name,amount,price)
+async function updateGame(game)
 {
-  const results = db.all("UPDATE Games SET Price = ?, Amount_Available = ? WHERE GameId = ?", [price, amount, rowid]);
+  const results = db.get("UPDATE Games SET Category = ?, SET Price = ?, Amount_Available = ? WHERE Name = ?", [game.category, game.price, game.amount, game.name]);
   return results;
 }
 

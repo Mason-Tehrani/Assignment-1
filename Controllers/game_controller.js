@@ -23,9 +23,9 @@ router.get("/games", async function(req, res)
 
 router.get("/view/:name", async function(req, res)
 {
-    const game = await getGame(req.params.name);
+    const existingGame = await getGame(req.params.name);
 
-    if (!game) {
+    if (!existingGame) {
         return res.redirect("/games");
     } 
 
@@ -39,11 +39,26 @@ router.get("/create", async function(req, res)
   res.render("game_view", req.TPL);
 });
 
+
+router.post("/create", async function(req, res) {
+    try {
+        const game = req.body;
+
+        await AddGame(game);
+
+        return res.redirect("/games");
+
+    } catch (error) {
+        console.log(error.message);
+        return res.status(400).send(error.message);
+    }
+});
+
 router.post("/delete/:name", async function(req, res)
 {
-    const game = await getGame(req.params.name);
+    const existingGame = await getGame(req.params.name);
 
-    if (!game) {
+    if (!existingGame) {
         return res.redirect("/games");
     } else {
       
