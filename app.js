@@ -4,6 +4,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const session = require('express-session');
 const mustacheExpress = require('mustache-express');
+const {  token } = require('./config.json');
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -22,20 +23,74 @@ const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
-	const filePath = path.join(commandsPath, file);
-	const command = require(filePath);
-	client.commands.set(command.data.name, command);
+    const filePath = path.join(commandsPath, file);
+    const command = require(filePath);
+
+    if (command.data && command.execute) {
+        client.commands.set(command.data.name, command);
+        console.log(`Command: ${command.data.name}`);
+    } else {
+        console.log(`Skipping ${file}: Invalid or empty command file.`);
+    }
 }
 
-//jasontnt124@gmail.com emergingwebtech bot token
-const DiscordBotToken = 'MTU1MDE2NDI5NzIzMjE1ODc0MA.GoC4uw.GGeFUbbKh-rYvH3Jq9RI7QBUotHonR7DAm1YuU'
+// emergingwebtech bot token
+const DiscordBotToken = token
 
-client.on('interactionCreate', async function(interaction) {
-  if (!interaction.isChatInputCommand()) return;
+// client.on('interactionCreate', async function(interaction) {
+//     console.log("Interaction received:", interaction.commandName);
+//   if (!interaction.isChatInputCommand()) return;
 
-  // handle your slash command, query your database, reply to the user
+//   	const command = client.commands.get(interaction.commandName);
 
-  io.emit('botactivity', { command: interaction.commandName, time: new Date() });
+// 	if (!command) return;
+
+// 	try {
+// 		await command.execute(interaction);
+// 	}catch (error) {
+//     console.error("Command execution error:", error);
+
+//     if (interaction.deferred || interaction.replied) {
+//         await interaction.editReply({
+//             content: 'There was an error while executing this command!'
+//         });
+//     } else {
+//         await interaction.reply({
+//             content: 'There was an error while executing this command!',
+//             ephemeral: true
+//         });
+//     }
+// }
+
+//   // handle your slash command, query your database, reply to the user
+
+//   io.emit('botactivity', { command: interaction.commandName, time: new Date() });
+// });
+
+client.on('interactionCreate', async (interaction) => {
+
+    if (!interaction.isChatInputCommand()) {
+        console.log("Not a slash command");
+        return;
+    }
+
+    console.log("User:", interaction.user.username);
+
+    const command = client.commands.get(interaction.commandName);
+
+    if (!command) {
+        console.log("Command not found in collection");
+        return;
+    }
+
+    console.log("Executing command...");
+
+    try {
+        await command.execute(interaction);
+        console.log("Command executed successfully");
+    } catch (error) {
+        console.error("Execution failed:", error);
+    }
 });
 
 client.login(DiscordBotToken);

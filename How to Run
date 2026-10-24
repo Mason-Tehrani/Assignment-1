@@ -4,5 +4,7 @@ npm install
 
 node db_init.js
 
+node deploy-commands.js
+
 node app.js
 

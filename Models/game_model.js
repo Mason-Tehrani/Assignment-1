@@ -1,21 +1,19 @@
 var sqlite3 = require("sqlite3").verbose();
 const sqlite = require("sqlite");
 
-async function startup()
-{
-  db = await sqlite.open({
-    filename: 'database.db',
-    driver: sqlite3.Database
-  });
+async function startup() {
+    db = await sqlite.open({
+        filename: 'database.db',
+        driver: sqlite3.Database
+    });
 }
 
 startup();
 
 // Return all Games
-async function getAllGames()
-{
-  const results = db.all("SELECT * FROM Games");
-  return results;
+async function getAllGames() {
+    const results = db.all("SELECT * FROM Games");
+    return results;
 }
 
 // Create a new Game
@@ -27,7 +25,7 @@ async function AddGame(Game) {
 
     const gameExists = await getGame(Game.Name);
 
-    if (gameExists) {
+    if (gameExists && gameExists != null) {
         throw new Error("A game with this name already exists.");
     }
 
@@ -38,21 +36,60 @@ async function AddGame(Game) {
 }
 
 //get individual game
-async function getGame(name)
-{
-    const result = await db.get(
+async function getGame(name) {
+    const results = await db.get(
         "SELECT * FROM Games WHERE Name = ?",
         [name]
     );
 
-    return result;
+    console.log("\n\n\n ----- " + results)
+       if ( results == undefined) {
+        return "No games found with this name.";
+    }
+
+    return results;
+
 }
+
+//get all games with the same category
+async function getGameByCategory(category) {
+    const results = await db.all(
+        "SELECT * FROM Games WHERE Category = ?",
+        [category]
+    );
+
+    if ( results == undefined) {
+        return "No games found in this category.";
+    }
+
+    return results;
+}
+
+//check if a game is in stock
+async function checkGameStock(name) {
+    const result = await getGame(name);
+
+    console.log(result)
+
+    if (result && result != null ) {
+        return result;
+    }  else {
+        return "this game is not sold at rolling dice games";
+    }
+
+
+
+
+}
+
 // delete individual game
 async function deleteGame(name)
 {
   const results = db.all("DELETE FROM Games WHERE Name = ?", [name]);
   return results;
 }
+
+//update a games catergory, ammount or price
 async function updateGame(game) {
     const results = await db.run(
         "UPDATE Games SET Category = ?, Price = ?, Amount_Available = ? WHERE name = ?",
@@ -62,4 +99,4 @@ async function updateGame(game) {
     return results;
 }
 
-module.exports = {getAllGames, AddGame, getGame, deleteGame, updateGame};
+module.exports = {getAllGames, AddGame, getGame, deleteGame, updateGame, checkGameStock, getGameByCategory};
