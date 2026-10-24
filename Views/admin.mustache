@@ -3,9 +3,34 @@
 {{>navigation}}
 
 <div class="row">
-  <div>
-    <div class="card">
-      <h2>admin here</h2>
-      
+    <div>
+        <div class="card">
+            <h2>Discord Bot Activity</h2>
+
+            <ul id="botActivityList">
+            </ul>
+
+        </div>
     </div>
-  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+ // Make the connection
+    var socket = io();
+
+    socket.on('botactivity', function(data) {
+
+        const list = document.getElementById('botActivityList');
+        const item = document.createElement('li');
+
+        item.textContent =
+            `User: ${data.username} |
+             Command: ${data.command}
+             | Time: ${data.time}  `;
+
+        list.prepend(item);
+
+    });
+</script>

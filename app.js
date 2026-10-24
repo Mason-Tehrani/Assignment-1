@@ -37,40 +37,9 @@ for (const file of commandFiles) {
 // emergingwebtech bot token
 const DiscordBotToken = token
 
-// client.on('interactionCreate', async function(interaction) {
-//     console.log("Interaction received:", interaction.commandName);
-//   if (!interaction.isChatInputCommand()) return;
-
-//   	const command = client.commands.get(interaction.commandName);
-
-// 	if (!command) return;
-
-// 	try {
-// 		await command.execute(interaction);
-// 	}catch (error) {
-//     console.error("Command execution error:", error);
-
-//     if (interaction.deferred || interaction.replied) {
-//         await interaction.editReply({
-//             content: 'There was an error while executing this command!'
-//         });
-//     } else {
-//         await interaction.reply({
-//             content: 'There was an error while executing this command!',
-//             ephemeral: true
-//         });
-//     }
-// }
-
-//   // handle your slash command, query your database, reply to the user
-
-//   io.emit('botactivity', { command: interaction.commandName, time: new Date() });
-// });
-
 client.on('interactionCreate', async (interaction) => {
 
     if (!interaction.isChatInputCommand()) {
-        console.log("Not a slash command");
         return;
     }
 
@@ -79,18 +48,36 @@ client.on('interactionCreate', async (interaction) => {
     const command = client.commands.get(interaction.commandName);
 
     if (!command) {
-        console.log("Command not found in collection");
+        console.log("Command not found");
         return;
     }
 
-    console.log("Executing command...");
+    let result; 
 
     try {
-        await command.execute(interaction);
+        result = await command.execute(interaction);
+
         console.log("Command executed successfully");
+
+        if (result === undefined) {
+            const reply = await interaction.fetchReply()
+                .catch(() => null);
+
+            result = reply?.content || "Command executed successfully";
+        }
+
     } catch (error) {
         console.error("Execution failed:", error);
+
+        result = "Error: " + error.message;
     }
+
+    io.emit('botactivity', {
+        username: interaction.user.username,
+        command: interaction.commandName,
+        time: new Date()
+    });
+
 });
 
 client.login(DiscordBotToken);
@@ -127,9 +114,9 @@ app.use("/login", require("./Controllers/login_controller"));
 app.use("/games", require("./Controllers/game_controller"));
 
 // Start the server
-var server = app.listen(3000, function() {
-        console.log("Server listening...");
-})
+http.listen(3000, function() {
+    console.log("socket/server listening...");
+});
 
 client.on('clientReady', () => {
     console.log(`Logged in as ${client.user.tag}!`);
