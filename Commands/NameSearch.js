@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { getGame } = require("../Models/game_model.js");
+const { GamesQuery } = require("../Models/game_model.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -12,38 +12,36 @@ module.exports = {
         ),
 
     async execute(interaction) {
-    const name = interaction.options.getString('game-name');
+        const name = interaction.options.getString('game-name');
 
-    console.log("name requested:", name);
+        console.log("name requested:", name);
 
-    await interaction.deferReply();
+        await interaction.deferReply();
 
-   try {
-    const result = await getGame(name);
+        try {
+            const results = await GamesQuery(name);
+            console.log("Database results:", results);
 
-    console.log("Database result:", result);
+            if (typeof results === 'string') {
+                return await interaction.editReply(results);
+            }
 
-    // Game not found or out of stock
-    if (typeof result === 'string') {
-        return await interaction.editReply(result);
+            const message = results
+                .map(game =>
+                    `- Name: ${game.Name}, Category: ${game.Category}, Price: ${game.Price}, Stock: ${game.Amount_Available}`
+                )
+                .join('\n');
+
+            return await interaction.editReply(
+                message || 'No games found with this name.'
+            );
+
+        } catch (error) {
+            console.error("Game search error:", error);
+
+            return await interaction.editReply(
+                'There was an error searching for games.'
+            );
+        }
     }
-
-    // Game found and in stock
-    if (result) {
-        const message =
-            `- Name: ${result.Name}, Category: ${result.Category} Price: ${result.Price}, Stock: ${result.Amount_Available}`;
-
-        return await interaction.editReply(message);
-    }
-
-    return await interaction.editReply('No games found with this name');
-
-} catch (error) {
-        console.error("in stock search error:", error);
-
-        return await interaction.editReply(
-            'There was an error searching for games.'
-        );
-    }
-}
 };

@@ -24,8 +24,9 @@ async function AddGame(Game) {
     }
 
     const gameExists = await getGame(Game.Name);
+    console.log(gameExists)
 
-    if (gameExists && gameExists != null) {
+    if (gameExists && gameExists != "No games found with this name.") {
         throw new Error("A game with this name already exists.");
     }
 
@@ -42,19 +43,30 @@ async function getGame(name) {
         [name]
     );
 
-    console.log("\n\n\n ----- " + results)
        if ( results == undefined) {
         return "No games found with this name.";
     }
 
     return results;
+}
 
+async function GamesQuery(name) {
+    const results = await db.all(
+        "SELECT * FROM Games WHERE LOWER(Name) LIKE LOWER(?)",
+        [name]
+    );
+
+    if (results.length === 0) {
+        return "No games found with this name.";
+    }
+
+    return results;
 }
 
 //get all games with the same category
 async function getGameByCategory(category) {
     const results = await db.all(
-        "SELECT * FROM Games WHERE Category = ?",
+        "SELECT * FROM Games WHERE LOWER(Category) = LIKE LOWER(?)",
         [category]
     );
 
@@ -99,4 +111,4 @@ async function updateGame(game) {
     return results;
 }
 
-module.exports = {getAllGames, AddGame, getGame, deleteGame, updateGame, checkGameStock, getGameByCategory};
+module.exports = {getAllGames, AddGame, getGame, deleteGame, updateGame, checkGameStock, getGameByCategory, GamesQuery};
