@@ -38,8 +38,8 @@ async function AddGame(Game) {
 
 //get individual game
 async function getGame(name) {
-    const results = await db.get(
-        "SELECT * FROM Games WHERE Name = ?",
+     const results = await db.get(
+        "SELECT * FROM Games WHERE LOWER(Name) LIKE LOWER(?)",
         [name]
     );
 
@@ -64,13 +64,14 @@ async function GamesQuery(name) {
 }
 
 //get all games with the same category
+// Get all games with the same category
 async function getGameByCategory(category) {
     const results = await db.all(
-        "SELECT * FROM Games WHERE LOWER(Category) = LIKE LOWER(?)",
+        "SELECT * FROM Games WHERE LOWER(Category) = LOWER(?)",
         [category]
     );
 
-    if ( results == undefined) {
+    if (results.length === 0) {
         return "No games found in this category.";
     }
 
